@@ -19,29 +19,29 @@ public class ClaimRequestController {
     @Autowired
     private ClaimRequestService claimRequestService;
 
-    @GetMapping		// + ?
+    @GetMapping		// + 
     public List<ClaimRequest> getAllClaims() {
         return claimRequestService.getAllClaims();
     }
     
-    @GetMapping("/type/{type}")
+    @GetMapping("/type/{type}")		// +
     public List<ClaimRequest> getClaimsByType(@PathVariable ClaimType type) {
         return claimRequestService.getClaimsByType(type);
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")		// +
     public ResponseEntity<ClaimRequest> getClaimById(@PathVariable Long id) {
         Optional<ClaimRequest> claim = claimRequestService.getClaimById(id);
         return claim.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{userId}") 		// +
     public List<ClaimRequest> getClaimsByUser(@PathVariable Long userId) {
         return claimRequestService.getClaimsByUser(userId);
     }
 
-    @GetMapping("/status/{status}")
+    @GetMapping("/status/{status}")		// +
     public List<ClaimRequest> getClaimsByStatus(@PathVariable ClaimStatus status) {
         return claimRequestService.getClaimsByStatus(status);
     }
@@ -52,8 +52,8 @@ public class ClaimRequestController {
         return ResponseEntity.ok(createdClaim);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<ClaimRequest> updateClaimStatus(@PathVariable Long id, @RequestParam ClaimStatus status) {
+    @PutMapping("/{id}/status/{status}")	// +
+    public ResponseEntity<ClaimRequest> updateClaimStatus(@PathVariable Long id, @PathVariable ClaimStatus status) {
         ClaimRequest updatedClaim = claimRequestService.updateClaimStatus(id, status);
         if (updatedClaim != null) {
             return ResponseEntity.ok(updatedClaim);
@@ -61,7 +61,7 @@ public class ClaimRequestController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")		// +
     public ResponseEntity<Void> deleteClaim(@PathVariable Long id) {
         boolean deleted = claimRequestService.deleteClaim(id);
         if (deleted) {

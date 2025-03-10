@@ -10,5 +10,8 @@ import com.tus.lostAndFound.model.Admin;
 @Repository
 public interface AdminRepo extends JpaRepository<Admin, Long>{
 	Optional<Admin> findByEmail(String email);
+	
+    // Check if an admin exists by email
+    boolean existsByEmail(String email);
 
 }

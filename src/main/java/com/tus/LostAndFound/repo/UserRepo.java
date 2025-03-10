@@ -9,6 +9,10 @@ import com.tus.lostAndFound.model.User;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>{
-	Optional<User> findByEmail(String email);
+	// Find a user by email
+    Optional<User> findByEmail(String email);
+
+    // Check if a user exists by email
+    boolean existsByEmail(String email);
 
 }

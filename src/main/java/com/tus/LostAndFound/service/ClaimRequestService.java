@@ -48,34 +48,25 @@ public class ClaimRequestService {
         return claimRequestRepo.findByRequestType(type);
     }
 
-//    public ClaimRequest createClaim(ClaimRequest claimRequest) {
-//        claimRequest.setCreatedAt(LocalDateTime.now());
-//        claimRequest.setUpdatedAt(LocalDateTime.now());
-//        claimRequest.setStatus(ClaimStatus.PENDING);
-//
-//        // Fetch LostItem from database if provided
-//        if (claimRequest.getLostItem() != null) {
-//            Long lostItemId = claimRequest.getLostItem().getId();
-//            LostItem lostItem = lostItemRepo.findById(lostItemId)
-//                    .orElseThrow(() -> new IllegalArgumentException("Lost item not found with ID: " + lostItemId));
-//            claimRequest.setLostItem(lostItem);
-//        }
-//
-//        // Fetch FoundItem from database if provided
-//        if (claimRequest.getFoundItem() != null) {
-//            Long foundItemId = claimRequest.getFoundItem().getId();
-//            FoundItem foundItem = foundItemRepo.findById(foundItemId)
-//                    .orElseThrow(() -> new IllegalArgumentException("Found item not found with ID: " + foundItemId));
-//            claimRequest.setFoundItem(foundItem);
-//        }
-//
-//        return claimRequestRepo.save(claimRequest);
-//    }
     
     public ClaimRequest createClaim(ClaimRequest claimRequest) {
         claimRequest.setCreatedAt(LocalDateTime.now());
         claimRequest.setUpdatedAt(LocalDateTime.now());
         claimRequest.setStatus(ClaimStatus.PENDING);
+        if (claimRequest.getRequestType() == ClaimType.CLAIM_FOUND) {
+            // Check if the user has already claimed this found item
+            if (claimRequestRepo.existsByUserIdAndFoundItemId(claimRequest.getUserId(), claimRequest.getFoundItemId())) {
+                throw new IllegalArgumentException("You have already made a claim for this found item");
+            }
+        }
+
+        if (claimRequest.getRequestType() == ClaimType.CLAIM_LOST) {
+            // Check if the user has already claimed this lost item
+            if (claimRequestRepo.existsByUserIdAndLostItemId(claimRequest.getUserId(), claimRequest.getLostItemId())) {
+                throw new IllegalArgumentException("You have already made a claim for this lost item");
+            }
+        }
+
         return claimRequestRepo.save(claimRequest);
     }
     

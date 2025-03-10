@@ -26,6 +26,12 @@ public interface ClaimRequestRepo extends JpaRepository<ClaimRequest, Long>{
     
     // retrieve all lost or found claims
     List<ClaimRequest> findByRequestType(ClaimType requestType);
+    
+    // Check if a claim already exists for this user and found item
+    boolean existsByUserIdAndFoundItemId(Long userId, Long foundItemId);
+
+    // Check if a claim already exists for this user and lost item
+    boolean existsByUserIdAndLostItemId(Long userId, Long lostItemId);
 
 
 }
