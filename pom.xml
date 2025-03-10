@@ -16,11 +16,11 @@
 	<description>Filtering internet traffic for educational insitutes</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 
-	<!-- DNSJava for DNS message parsing and resolution -->
+		<!-- DNSJava for DNS message parsing and resolution -->
     <dependency>
         <groupId>dnsjava</groupId>
         <artifactId>dnsjava</artifactId>
@@ -155,10 +155,10 @@
 			<artifactId>junit-platform-suite</artifactId>
 			<version>1.8.2</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<!-- JWT Library (jjwt) -->
 		<dependency>
