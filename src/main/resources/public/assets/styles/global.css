@@ -1,0 +1,74 @@
+/* General Styles */
+body {
+    background: white;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Login Page Styling */
+.login-container {
+    height: 80vh;
+}
+
+.login-card {
+    max-width: 420px;
+    width: 100%;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ffffff, #f5f7fa);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo Styling */
+.login-logo {
+    max-height: 90px;
+}
+
+/* Title */
+.login-title {
+    color: #B744B8;
+    font-weight: bold;
+}
+
+/* Input Labels */
+.form-label {
+    color: #A379C9;
+}
+
+/* Login Button */
+.login-btn {
+    background-color: #ACDDE7;
+    color: white;
+    font-size: 1.1rem;
+    transition: all 0.3s ease-in-out;
+    border-radius: 8px;
+    border: none;
+}
+
+.login-btn:hover {
+    background-color: #ADB9E3;
+    transform: scale(1.05);
+}
+
+/* Input Fields */
+.form-control {
+    color: #A379C9 !important;  /* Ensures text color applies while typing */
+    caret-color: #A379C9;  /* Cursor color */
+    background-color: #ffffff;  /* Keep background white */
+    border: 1px solid #ADB9E3;  /* Subtle border */
+}
+
+/* Placeholder Text */
+.form-control::placeholder {
+    color: #ADB9E3;  /* Soft placeholder text */
+}
+
+/* When the input is active */
+.form-control:focus {
+    border-color: #B744B8;  /* Highlight border when typing */
+    box-shadow: 0 0 5px rgba(183, 68, 184, 0.5); /* Soft glow effect */
+    outline: none;  /* Remove default outline */
+}
+
+/* Fix for Text Color Remaining Black */
+input[type="email"], input[type="password"] {
+    color: #A379C9 !important; /* Ensures immediate color change */
+}

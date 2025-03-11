@@ -16,13 +16,13 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    // Get all admins
+    // Get all admins +
     @GetMapping
     public List<Admin> getAllAdmins() {
         return adminService.getAllAdmins();
     }
 
-    // Get an admin by ID
+    // Get an admin by ID +
     @GetMapping("/{id}")
     public ResponseEntity<Admin> getAdminById(@PathVariable Long id) {
         return adminService.getAdminById(id)
@@ -30,7 +30,7 @@ public class AdminController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Get an admin by email
+    // Get an admin by email +
     @GetMapping("/email")
     public ResponseEntity<Admin> getAdminByEmail(@RequestParam String email) {
         return adminService.getAdminByEmail(email)
@@ -38,7 +38,7 @@ public class AdminController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    //  Create a new admin
+    //  Create a new admin +
     @PostMapping
     public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {
         try {
