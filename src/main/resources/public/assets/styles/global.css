@@ -35,8 +35,8 @@ body {
 
 /* Login Button */
 .login-btn {
-    background-color: #ACDDE7;
-    color: white;
+    background-color: #9AD5CA;
+    color: #ffffff;
     font-size: 1.1rem;
     transition: all 0.3s ease-in-out;
     border-radius: 8px;

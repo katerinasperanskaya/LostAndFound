@@ -1,70 +1,84 @@
 const app = Vue.createApp({
   data() {
     return {
-      currentView: 'login'  // Ensure login is the default view
+      // Dynamically initialize currentView based on authState
+      currentView: authState.isLoggedIn
+        ? (authState.role === "ADMIN" ? 'admin_dashboard' : 'user_dashboard')
+        : 'login'
     };
   },
 
   methods: {
     changeView(newView) {
-      this.currentView = newView;
+      this.currentView = newView;  // Update the current view
     }
+  },
+
+  mounted() {
+    // No need to set the initial view here anymore, as it's already handled in data()
   }
 });
 
-// 🔹 Ensure `authState` is available and not dependent on tokens
+// 🔹 Reactive authState to manage login state globally
 const authState = Vue.reactive({
-  isLoggedIn: false,  // Authentication works, but no tokens
-  username: ''
+  isLoggedIn: false,
+  username: '',
+  role: ''
 });
 
+// Check localStorage for persisted login state
+const storedRole = localStorage.getItem('authRole');
+const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+if (isLoggedIn === 'true') {
+  authState.isLoggedIn = true;
+  authState.role = storedRole;
+  authState.username = localStorage.getItem('username') || ''; // Optional username
+}
+
+// Provide authState to all components
 app.provide('authState', authState);
 
-const unrestrictedComponents = [
-  "navbar.js",
-  "login.js",
-  "aside_menu.js"  // 🔹 Keeping sidebar
+// List of all components to load
+const componentFiles = [
+  "navbar.js",                // Unrestricted
+  "login.js",                 // Unrestricted
+  "aside_menu.js",            // Unrestricted
+  "admin/admin_dashboard.js", // Restricted - Admin
+  "user/user_dashboard.js",   // Restricted - User
+  "user/lost_items.js",       // Restricted - User
+  "user/found_items.js",      // Restricted - User
+  "admin/admin_claims.js",    // Restricted - Admin
+  "admin/admin_users.js"      // Restricted - Admin
 ];
-
-const restrictedComponentFiles = {
-  USER: [
-    "user/dashboard.js",
-    "user/lost_items.js",
-    "user/found_items.js"
-  ],
-  ADMIN: [
-    "admin/admin_dashboard.js",
-    "admin/claims.js",
-    "admin/users.js"
-  ]
-};
 
 async function loadComponent(file) {
   try {
     const response = await fetch(`./components/${file}`);
     if (!response.ok) throw new Error(`Failed to load: ${file}`);
-    
+
     const scriptText = await response.text();
     const blob = new Blob([scriptText], { type: 'application/javascript' });
     const blobUrl = URL.createObjectURL(blob);
-    
+
     const module = await import(blobUrl);
     URL.revokeObjectURL(blobUrl);
-    
-	// Extract the component name from the file path.
-	    const componentName = file.split('/').pop().replace(".js", "");
-	    app.component(componentName, module.default || module);
-	  } catch (error) {
-	    console.error(`Error loading component: ${file}`, error);
-	  }
+
+    // Extract the component name from the file path
+    const componentName = file.split('/').pop().replace(".js", "");
+    app.component(componentName, module.default || module);
+  } catch (error) {
+    console.error(`Error loading component: ${file}`, error);
+  }
 }
 
 async function loadComponents() {
   try {
-    await Promise.all(unrestrictedComponents.map(loadComponent));
+    await Promise.all(componentFiles.map(loadComponent));
     console.log("✅ All components loaded.");
-    
-    app.mount("#app"); 
+
+    // Mount the app after all components are loaded
+    app.mount("#app");
   } catch (error) {
     console.error("❌ Error during component loading", error);
   }

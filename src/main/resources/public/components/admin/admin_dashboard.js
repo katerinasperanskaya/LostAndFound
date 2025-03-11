@@ -1,7 +1,7 @@
 export default {
   template: `
 <div class="container mt-5">
-    <h2 class="text-center">Admin Dashboard</h2>
+    <h1>Admin Dashboard</h1>
     <div class="row">
         <div class="col-md-6">
             <button @click="$root.changeView('admin_claims')" class="btn btn-secondary w-100 mb-3">Manage Claims</button>

@@ -1,21 +1,82 @@
 export default {
   template: `
-<div class="container mt-5">
-    <h2 class="text-center">Your Claims</h2>
-    <ul class="list-group">
-        <li v-for="claim in claims" :key="claim.id" class="list-group-item">
-            {{ claim.description }} - <strong>{{ claim.status }}</strong>
-        </li>
-    </ul>
-</div>
+  <div class="container d-flex justify-content-center align-items-center login-container">
+      <div class="card border-0 shadow login-card">
+          <div class="card-body p-5">
+              <div class="text-center mb-4">
+                  <img src="assets/images/logo.svg" alt="L&F logo" class="img-fluid login-logo">
+              </div>
+
+              <h2 class="text-center login-title">Login</h2>
+              
+              <form @submit.prevent="handleLogin">
+                  <div class="form-floating mb-3">
+                      <input  id="email" class="form-control" 
+                             v-model="email" required placeholder="Email">
+                      <label for="email" class="form-label">Email</label>
+                  </div>
+
+                  <div class="form-floating mb-4">
+                      <input type="password" id="password" class="form-control" 
+                             v-model="password" required placeholder="Password">
+                      <label for="password" class="form-label">Password</label>
+                  </div>
+
+                  <button type="submit" class="btn w-100 py-3 fw-semibold mb-3 login-btn">
+                      <span>Login</span>
+                  </button>
+
+                  <div v-if="errorMessage" class="alert alert-danger mt-3 mb-0">
+                      {{ errorMessage }}
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
   `,
+  inject: ['authState'], // Inject authState
   data() {
-    return {
-      claims: []
-    };
-  },
-  async created() {
-    const response = await fetch('/api/claims');
-    this.claims = await response.json();
-  }
-};
+      return {
+        email: '',
+        password: '',
+        errorMessage: ''
+      };
+    },
+    methods: {
+      async handleLogin() {
+        this.errorMessage = '';
+    
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: this.email, password: this.password })
+          });
+    
+          if (!response.ok) throw new Error('Invalid email or password');
+    
+          const data = await response.json();
+    
+          // Store role and auth state in localStorage
+          localStorage.setItem('authRole', data.role);
+          localStorage.setItem('isLoggedIn', true);
+    
+          // Update global authState
+          this.authState.isLoggedIn = true;
+          this.authState.username = data.username || this.email; // Store username or email
+    
+          // Redirect based on role
+          if (data.role === "ADMIN") {
+            this.$root.changeView('admin_dashboard');  // Admin goes to dashboard
+            window.location.reload();
+          } else {
+            this.$root.changeView('user_dashboard');  // User goes to claims page
+            window.location.reload();
+          }
+    
+        } catch (error) {
+          this.errorMessage = error.message;
+        }
+      }
+    }
+  };

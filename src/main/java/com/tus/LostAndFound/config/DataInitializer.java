@@ -17,8 +17,8 @@ public class DataInitializer implements CommandLineRunner {
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
 
-    private final String DEFAULT_ADMIN_EMAIL = "admin@lostandfound.com";
-    private final String DEFAULT_ADMIN_PASSWORD = "Admin@123";
+    private final String DEFAULT_ADMIN_EMAIL = "admin";
+    private final String DEFAULT_ADMIN_PASSWORD = "admin";
 
     @Override
     public void run(String... args) throws Exception {

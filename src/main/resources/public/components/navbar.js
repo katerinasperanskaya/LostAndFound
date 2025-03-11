@@ -74,7 +74,8 @@ export default {
   inject: ['authState'],
   methods: {
     logout() {
-      localStorage.removeItem("jwt");
+      localStorage.removeItem("authRole");
+      localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("username");
       localStorage.removeItem("role");
       localStorage.removeItem("currentRole");
