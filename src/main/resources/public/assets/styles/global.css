@@ -72,3 +72,25 @@ body {
 input[type="email"], input[type="password"] {
     color: #A379C9 !important; /* Ensures immediate color change */
 }
+
+/* Override Bootstrap button colours */
+.btn-primary {
+    background-color: #A379C9 !important;
+    border-color: #A379C9 !important;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #B744B8 !important;
+    border-color: #B744B8 !important;
+}
+
+.btn-secondary {
+    background-color: #A379C9 !important;
+    border-color: #A379C9 !important;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: #ADB9E3 !important;
+    border-color: #ADB9E3 !important;
+}
+
