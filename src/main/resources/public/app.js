@@ -3,7 +3,7 @@ const app = Vue.createApp({
     return {
       // Dynamically initialize currentView based on authState
       currentView: authState.isLoggedIn
-        ? (authState.role === "ADMIN" ? 'admin_dashboard' : 'user_dashboard')
+        ? (authState.role === "ADMIN" ? 'admin_dashboard' : 'found_items')
         : 'login'
     };
   },

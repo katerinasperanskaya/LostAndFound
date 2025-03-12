@@ -3,6 +3,42 @@ export default {
   <div class="container mt-5">
      <h1>Found Items</h1>
 
+     <!-- Add Found Item Button -->
+     <button @click="showAddItemForm = true" class="btn btn-success mb-3">Add Found Item</button>
+
+     <!-- Add Found Item Form -->
+     <div v-if="showAddItemForm" class="card p-3 mb-3">
+        <h4>Add a New Found Item</h4>
+        <form @submit.prevent="addFoundItem">
+          <div class="mb-2">
+            <label class="form-label">Title</label>
+            <input v-model="newItem.title" type="text" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Description</label>
+            <textarea v-model="newItem.description" class="form-control" required></textarea>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Category</label>
+            <input v-model="newItem.category" type="text" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Location Found</label>
+            <input v-model="newItem.locationFound" type="text" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Date Found</label>
+            <input v-model="newItem.dateFound" type="datetime-local" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Image URL</label>
+            <input v-model="newItem.imageUrl" type="url" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" @click="showAddItemForm = false" class="btn btn-secondary ms-2">Cancel</button>
+        </form>
+     </div>
+
      <!-- Category Filter Dropdown -->
      <div class="mb-3">
         <label for="category" class="form-label">Filter by Category</label>
@@ -61,29 +97,57 @@ export default {
   `,
   data() {
     return {
+      showAddItemForm: false,
       selectedCategory: "",
       categories: [],
       foundItems: [],
-      filteredItems: []
+      filteredItems: [],
+      newItem: {
+        userId: 2, // Hardcoded userId, replace with actual logged-in user ID
+        title: "",
+        description: "",
+        category: "",
+        locationFound: "",
+        dateFound: "",
+        imageUrl: "",
+        status: "UNCLAIMED"
+      }
     };
   },
   async created() {
-    try {
-      const response = await fetch("http://localhost:9091/api/found-items");
-      this.foundItems = await response.json();
-
-      // Extract unique categories from found items
-      this.categories = [...new Set(this.foundItems.map(item => item.category))];
-
-      // Show all found items by default
-      this.filteredItems = this.foundItems;
-    } catch (error) {
-      console.error("Error fetching found items:", error);
-    }
+    await this.fetchFoundItems();
   },
   methods: {
+    async fetchFoundItems() {
+      try {
+        const response = await fetch("http://localhost:9091/api/found-items");
+        this.foundItems = await response.json();
+        this.categories = [...new Set(this.foundItems.map(item => item.category))];
+        this.filteredItems = this.foundItems;
+      } catch (error) {
+        console.error("Error fetching found items:", error);
+      }
+    },
+    async addFoundItem() {
+      try {
+        const response = await fetch("http://localhost:9091/api/found-items", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.newItem)
+        });
+        if (response.ok) {
+          const addedItem = await response.json();
+          this.foundItems.push(addedItem);
+          this.filterItems();
+          this.showAddItemForm = false;
+        } else {
+          console.error("Failed to add found item");
+        }
+      } catch (error) {
+        console.error("Error adding found item:", error);
+      }
+    },
     filterItems() {
-      // If no category is selected, show all found items
       this.filteredItems = this.selectedCategory
         ? this.foundItems.filter(item => item.category === this.selectedCategory)
         : this.foundItems;
@@ -93,13 +157,11 @@ export default {
         const response = await fetch(`http://localhost:9091/api/found-items/${itemId}/status/CLAIMED`, {
           method: "PATCH"
         });
-
         if (response.ok) {
-          // Update status in UI after successful claim
           this.foundItems = this.foundItems.map(item =>
             item.id === itemId ? { ...item, status: "CLAIMED" } : item
           );
-          this.filterItems(); // Refresh the filtered list
+          this.filterItems();
         } else {
           console.error("Failed to update status.");
         }

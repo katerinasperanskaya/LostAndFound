@@ -76,7 +76,7 @@ export default {
 
                 <!-- Navigation Links -->
                 <div class="list-group list-group-flush">
-                    <button @click="changeView('user_dashboard')"
+                  <!-- removing two side bar entries   <button @click="changeView('user_dashboard')"
                             :class="['list-group-item list-group-item-action border-0 rounded-pill mb-2',
                                      selectedView === 'user_dashboard' ? 'active' : '']">
                         <i class="bi bi-speedometer2"></i>
@@ -88,14 +88,14 @@ export default {
                                      selectedView === 'lost_items' ? 'active' : '']">
                         <i class="bi bi-search"></i>
                         <span v-if="sidebarOpen" class="m-3">Lost Items</span>
-                    </button>
+                    </button>-->
 
                     <button @click="changeView('found_items')"
                             :class="['list-group-item list-group-item-action border-0 rounded-pill mb-2',
                                      selectedView === 'found_items' ? 'active' : '']">
                         <i class="bi bi-check-circle"></i>
                         <span v-if="sidebarOpen" class="m-3">Found Items</span>
-                    </button>
+                    </button> 
                 </div>
             </div>
         </aside>

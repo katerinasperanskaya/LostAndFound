@@ -38,7 +38,7 @@
   <div id="app">
     <navbar></navbar>
     <div class="d-flex justify-content-center align-items-start">
-      <aside_menu @change-view="currentView = $event"></aside_menu> <!--The @change-view listens for an event named "change-view" that is emitted from <aside_menu>.
+      <aside_menu @change-view="currentView = $event" ></aside_menu> <!--The @change-view listens for an event named "change-view" that is emitted from <aside_menu>.
 		When the event is triggered, it updates currentView with the event's value ($event).-->
       <main class="container p-5">
         <component :is="currentView" :key="currentView"></component><!--:is="currentView" → Vue will dynamically render whatever component name is stored in currentView.-->
