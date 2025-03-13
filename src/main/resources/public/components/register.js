@@ -86,7 +86,7 @@ export default {
         if (response.ok) {
           this.successMessage = 'Registration successful! Redirecting to login...';
           setTimeout(() => {
-            this.$router.push('/login'); // Redirect to login page
+            this.$root.changeView('login'); // Redirect to login page
           }, 2000);
         } else {
           this.errorMessage = 'Error registering user. Please try again.';
@@ -96,7 +96,7 @@ export default {
       }
     },
     navigateToLogin() {
-      this.$router.push('/login'); // Ensure Vue Router is being used
+      this.$root.changeView('login'); // Ensure Vue Router is being used
     }
   }
 };

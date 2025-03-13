@@ -10,9 +10,14 @@ const app = Vue.createApp({
 
   methods: {
     changeView(newView) {
-      this.currentView = newView;  // Update the current view
+      if (["login", "register", "found_items", "lost_items", "admin_dashboard"].includes(newView)) {
+        this.currentView = newView;
+      } else {
+        console.warn(`🚨 Invalid view attempted: ${newView}`);
+      }
     }
-  },
+  }
+,
 
   mounted() {
     // No need to set the initial view here anymore, as it's already handled in data()
@@ -43,7 +48,7 @@ app.provide('authState', authState);
 const componentFiles = [
   "navbar.js",                // Unrestricted
   "login.js",                 // Unrestricted
-  "user/register.js",         // ✅ Add Register Component
+  "register.js",         	  
   "aside_menu.js",            // Unrestricted
   "admin/admin_dashboard.js", // Restricted - Admin
   "user/user_dashboard.js",   // Restricted - User
