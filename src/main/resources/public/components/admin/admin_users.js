@@ -3,9 +3,9 @@ export default {
     <div class="container py-5">
 
       <div class="d-flex align-items-center justify-content-between mb-4">
-        <h1 class="text-dark fw-normal">Manage Users & Admins</h1>
+        <h1 class="text-dark fw-normal">Manage Users</h1>
         <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#userModal">
-          <i class="bi bi-person-plus me-2"></i> Add User/Admin
+          <i class="bi bi-person-plus me-2"></i> Add User
         </button>
       </div>
 
