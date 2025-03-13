@@ -1,9 +1,9 @@
 export default {
   template: `
     <div class="container py-5">
-      <!-- Header -->
+
       <div class="d-flex align-items-center justify-content-between mb-4">
-        <h2 class="fw-bold text-primary mb-0">Manage Users & Admins</h2>
+        <h1 class="text-dark fw-normal">Manage Users & Admins</h1>
         <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#userModal">
           <i class="bi bi-person-plus me-2"></i> Add User/Admin
         </button>
@@ -179,10 +179,10 @@ export default {
             orderable: false,
             className: 'text-center',
             render: (data, type, row) => `
-              <button class="btn btn-primary btn-sm edit-user me-2" data-id="${row.id}">
+              <button class="btn btn-primary btn-sm edit-user me-2 px-3 mb-2" data-id="${row.id}">
                 <i class="bi bi-pencil"></i> Edit
               </button>
-              <button class="btn btn-danger btn-sm delete-user" data-id="${row.id}">
+              <button class="btn btn-primary btn-sm delete-user me-2" data-id="${row.id}">
                 <i class="bi bi-trash"></i> Delete
               </button>
             `
