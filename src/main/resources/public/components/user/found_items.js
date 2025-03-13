@@ -125,7 +125,7 @@ export default {
       foundItems: [],
       filteredItems: [],
       newItem: {
-        userId: 2, // Hardcoded userId, replace with actual logged-in user ID
+        userId: 1, // Hardcoded userId, replace with actual logged-in user ID
         title: "",
         description: "",
         category: "",

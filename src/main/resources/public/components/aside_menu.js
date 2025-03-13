@@ -38,19 +38,19 @@ export default {
 
                 <!-- Navigation Links -->
                 <div class="list-group list-group-flush">
-                    <button @click="changeView('admin_dashboard')"
+  <!--                  <button @click="changeView('admin_dashboard')"
                             :class="['list-group-item list-group-item-action border-0 rounded-pill mb-2',
                                      selectedView === 'admin_dashboard' ? 'active' : '']">
                         <i class="bi bi-speedometer2"></i>
                         <span v-if="sidebarOpen" class="m-3">Dashboard</span>
-                    </button>
+                    </button>-->
 
-                    <button @click="changeView('admin_claims')"
+        <!--            <button @click="changeView('admin_claims')"
                             :class="['list-group-item list-group-item-action border-0 rounded-pill mb-2',
                                      selectedView === 'admin_claims' ? 'active' : '']">
                         <i class="bi bi-card-checklist"></i>
                         <span v-if="sidebarOpen" class="m-3">Claims</span>
-                    </button>
+                    </button> -->
 
                     <button @click="changeView('admin_users')"
                             :class="['list-group-item list-group-item-action border-0 rounded-pill mb-2',

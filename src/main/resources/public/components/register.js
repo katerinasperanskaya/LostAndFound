@@ -87,7 +87,7 @@ export default {
           this.successMessage = 'Registration successful! Redirecting to login...';
           setTimeout(() => {
             this.$root.changeView('login'); // Redirect to login page
-          }, 2000);
+          }, 5000);
         } else {
           this.errorMessage = 'Error registering user. Please try again.';
         }

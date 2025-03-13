@@ -3,14 +3,14 @@ const app = Vue.createApp({
     return {
       // Dynamically initialize currentView based on authState
       currentView: authState.isLoggedIn
-        ? (authState.role === "ADMIN" ? 'admin_dashboard' : 'found_items')
+        ? (authState.role === "ADMIN" ? 'admin_users' : 'found_items')
         : 'login'
     };
   },
 
   methods: {
     changeView(newView) {
-      if (["login", "register", "found_items", "lost_items", "admin_dashboard"].includes(newView)) {
+      if (["login", "register", "found_items", "lost_items", "admin_users"].includes(newView)) {
         this.currentView = newView;
       } else {
         console.warn(`🚨 Invalid view attempted: ${newView}`);
@@ -20,11 +20,10 @@ const app = Vue.createApp({
 ,
 
   mounted() {
-    // No need to set the initial view here anymore, as it's already handled in data()
   }
 });
 
-// 🔹 Reactive authState to manage login state globally
+// Reactive authState to manage login state globally
 const authState = Vue.reactive({
   isLoggedIn: false,
   username: '',
@@ -81,12 +80,12 @@ async function loadComponent(file) {
 async function loadComponents() {
   try {
     await Promise.all(componentFiles.map(loadComponent));
-    console.log("✅ All components loaded.");
+    console.log("All components loaded.");
 
     // Mount the app after all components are loaded
     app.mount("#app");
   } catch (error) {
-    console.error("❌ Error during component loading", error);
+    console.error("Error during component loading", error);
   }
 }
 
