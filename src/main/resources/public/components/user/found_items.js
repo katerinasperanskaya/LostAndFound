@@ -81,7 +81,7 @@ export default {
                         <img :src="item.imageUrl" alt="Found Item Image" class="img-thumbnail" width="80">
                     </td>
                     <td>
-                        <button v-if="item.status === 'UNCLAIMED'" @click="claimItem(item.id)" class="btn btn-primary btn-sm">
+                        <button v-if="item.status === 'UNCLAIMED'" @click="handleClaim(item.id, item.userId)" class="btn btn-primary btn-sm">
                             It's Mine!
                         </button>
                         <span v-else class="text-success">Claimed</span>
@@ -93,6 +93,28 @@ export default {
 
      <!-- No Items Found Message -->
      <p v-else class="text-muted text-center">No found items available.</p>
+  </div>
+  
+     <!-- Contact Info Modal -->
+     <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contact Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Name:</strong> {{ contactInfo.name }}</p>
+                    <p><strong>Email:</strong> {{ contactInfo.email }}</p>
+                    <p><strong>Phone:</strong> {{ contactInfo.phone }}</p>
+                    <p class="text-muted">Please contact the person to claim your item.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+     </div>
   </div>
   `,
   data() {
@@ -111,7 +133,12 @@ export default {
         dateFound: "",
         imageUrl: "",
         status: "UNCLAIMED"
-      }
+      },
+	  contactInfo: {
+	    name: "",
+	    email: "",
+	    phone: ""
+	  }
     };
   },
   async created() {
@@ -128,6 +155,28 @@ export default {
         console.error("Error fetching found items:", error);
       }
     },
+	async openContactModal(userId) {
+	  try {
+	    const response = await fetch(`http://localhost:9091/api/users/${userId}`);
+	    const user = await response.json();
+
+	    this.contactInfo = {
+	      name: user.name || "Unknown",
+	      email: user.email || "No email provided",
+	      phone: user.phone || "No phone number available"
+	    };
+
+	    const modal = new bootstrap.Modal(document.getElementById("contactModal"));
+	    modal.show();
+	  } catch (error) {
+	    console.error("Error fetching contact info:", error);
+	  }
+	},
+	async handleClaim(itemId, userId) {
+	  // Call both functions: update claim status and show modal
+	  await this.claimItem(itemId);
+	  this.openContactModal(userId);
+	},
     async addFoundItem() {
       try {
         const response = await fetch("http://localhost:9091/api/found-items", {

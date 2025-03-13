@@ -31,7 +31,7 @@ export default {
                   </div>
 				  <p class="text-center mt-3">
 				      Don't have an account? 
-				      <a href="#" @click="navigateToRegister" class="text-primary">Register here</a>
+					  <a href="javascript:void(0)" @click="navigateToRegister" class="text-primary">Register here</a>
 				  </p>
               </form>
           </div>

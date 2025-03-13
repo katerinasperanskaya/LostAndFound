@@ -43,6 +43,7 @@ app.provide('authState', authState);
 const componentFiles = [
   "navbar.js",                // Unrestricted
   "login.js",                 // Unrestricted
+  "user/register.js",         // ✅ Add Register Component
   "aside_menu.js",            // Unrestricted
   "admin/admin_dashboard.js", // Restricted - Admin
   "user/user_dashboard.js",   // Restricted - User
