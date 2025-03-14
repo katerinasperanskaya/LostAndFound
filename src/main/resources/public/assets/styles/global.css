@@ -1,7 +1,10 @@
 /* General Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@100;400;700&display=swap');
+
 body {
     background: white;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto Flex', sans-serif;
+	color: #333333; /* Dark gray for a softer look */
 }
 
 /* Login Page Styling */
@@ -92,5 +95,43 @@ input[type="email"], input[type="password"] {
 .btn-secondary:hover, .btn-secondary:focus {
     background-color: #ADB9E3 !important;
     border-color: #ADB9E3 !important;
+}
+
+/* Override Bootstrap .btn-success */
+.btn-success {
+    background-color: #9AD5CA !important;  /* Your custom greenish color */
+    border-color: #9AD5CA !important;
+    color: black !important; /* Ensure text remains visible */
+}
+
+/* Change hover effect */
+.btn-success:hover, .btn-success:focus {
+    background-color: #7FCBBC !important; /* A slightly darker shade */
+    border-color: #7FCBBC !important;
+    color: white !important;
+}
+
+/*Override bootstrap table*/
+table.table thead.table-primary th{
+    background-color: #ACDDE7 !important;
+    color: color: #333333 !important; 
+}
+
+/*Override bootstrap user dropdown*/
+
+
+/* Remove blue glow on focus */
+select:focus {
+    border-color: #ACDDE7 !important; /* Change border color */
+    box-shadow: 0 0 5px rgba(163, 121, 201, 0.5) !important; /* Soft purple glow */
+    outline: none !important;
+}
+
+
+/*Active side bar colour override*/
+.list-group-item-action.active {
+  background-color: #9AD5CA !important; /* Changes active selection color */
+  border-color: #9AD5CA !important; /* Optional: Changes border color */
+  color: white !important; /* Ensures text is visible */
 }
 

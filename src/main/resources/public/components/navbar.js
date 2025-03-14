@@ -1,7 +1,7 @@
 export default {
   template: `
   <nav class="navbar navbar-expand-lg navbar-dark"  
-       style="background: linear-gradient(90deg, #A379C9 0%, #B744B8 100%); 
+       style="background: linear-gradient(90deg, #ADB9E3 -20%, #B744B8 100%); 
               box-shadow: 0 2px 15px rgba(0,0,0,0.1); border-radius: 0;">
     <div class="container-fluid px-4">
       <!-- Logo and Title -->

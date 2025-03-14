@@ -4,7 +4,8 @@ export default {
      <h1>Found Items</h1>
 
      <!-- Add Found Item Button -->
-     <button @click="showAddItemForm = true" class="btn btn-success mb-3">Add Found Item</button>
+
+	 <button @click="showAddItemForm = true" class="btn btn-success mb-3">Add Found Item</button>
 
      <!-- Add Found Item Form -->
      <div v-if="showAddItemForm" class="card p-3 mb-3">
@@ -30,10 +31,12 @@ export default {
             <label class="form-label">Date Found</label>
             <input v-model="newItem.dateFound" type="datetime-local" class="form-control" required>
           </div>
-          <div class="mb-2">
-            <label class="form-label">Image URL</label>
-            <input v-model="newItem.imageUrl" type="url" class="form-control">
-          </div>
+          <!-- Commenting out the image for now
+		  	<div class="mb-2">
+	            <label class="form-label">Image URL</label>
+	            <input v-model="newItem.imageUrl" type="url" class="form-control">
+         	 </div>
+		  -->
           <button type="submit" class="btn btn-primary">Submit</button>
           <button type="button" @click="showAddItemForm = false" class="btn btn-secondary ms-2">Cancel</button>
         </form>
@@ -61,8 +64,9 @@ export default {
                     <th>Location Found</th>
                     <th>Date Found</th>
                     <th>Status</th>
-                    <th>Image</th>
-                    <th>Claim</th>
+					<!-- Commenting out image column header -->
+					<!-- <th>Image</th> -->
+                    <th>Claim item</th>
                 </tr>
             </thead>
             <tbody>
@@ -77,12 +81,13 @@ export default {
                             {{ item.status }}
                         </span>
                     </td>
+					<!-- Commenting out image column --><!--
                     <td>
                         <img :src="item.imageUrl" alt="Found Item Image" class="img-thumbnail" width="80">
-                    </td>
+                    </td>-->
                     <td>
                         <button v-if="item.status === 'UNCLAIMED'" @click="handleClaim(item.id, item.userId)" class="btn btn-primary btn-sm">
-                            It's Mine!
+                            Claim
                         </button>
                         <span v-else class="text-success">Claimed</span>
                     </td>
@@ -131,7 +136,7 @@ export default {
         category: "",
         locationFound: "",
         dateFound: "",
-        imageUrl: "",
+        // imageUrl: "",
         status: "UNCLAIMED"
       },
 	  contactInfo: {
