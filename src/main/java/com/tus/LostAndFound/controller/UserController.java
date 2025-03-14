@@ -1,5 +1,6 @@
 package com.tus.lostAndFound.controller;
 
+import com.tus.lostAndFound.dto.UserDTO;
 import com.tus.lostAndFound.model.User;
 import com.tus.lostAndFound.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,29 +17,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Get all users +
+    // ✅ Get all users (returning DTOs to exclude passwords)
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Get a user by ID +
+    // ✅ Get a user by ID (returning DTO)
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Get a user by email +
+    // ✅ Get a user by email (returning DTO)
     @GetMapping("/email")
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+    public ResponseEntity<UserDTO> getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Create a new user +
+    // ✅ Create a new user (using User model)
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
@@ -49,18 +50,18 @@ public class UserController {
         }
     }
 
-    // Update an existing user 
+    // ✅ Update an existing user (using DTO to avoid password updates)
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO updatedUserDTO) {
         try {
-            User updated = userService.updateUser(id, updatedUser);
+            UserDTO updated = userService.updateUser(id, updatedUserDTO);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Delete a user
+    // ✅ Delete a user
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.deleteUser(id)) {
@@ -69,4 +70,3 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 }
-
