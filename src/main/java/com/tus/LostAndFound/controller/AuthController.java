@@ -3,11 +3,14 @@ package com.tus.lostAndFound.controller;
 import com.tus.lostAndFound.model.User;
 import com.tus.lostAndFound.model.Admin;
 import com.tus.lostAndFound.repo.UserRepo;
+import com.tus.lostAndFound.util.JwtUtil;
+import com.tus.lostAndFound.util.PasswordEncoderUtil;
 import com.tus.lostAndFound.repo.AdminRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +23,12 @@ public class AuthController {
     @Autowired
     private AdminRepo adminRepo;
 
+    @Autowired
+    private PasswordEncoderUtil passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     // DTO for login requests
     public static class AuthRequest {
         public String email;
@@ -31,39 +40,43 @@ public class AuthController {
         public String message;
         public String email;
         public String role;
+        public String token; // Add this field
 
-        public AuthResponse(String message, String email, String role) {
+        // Constructor with four parameters
+        public AuthResponse(String message, String email, String role, String token) {
             this.message = message;
             this.email = email;
             this.role = role;
+            this.token = token; // Assign the token
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> createAuthenticationToken(@RequestBody AuthRequest authRequest) {
-        // Check in Admin table first
         Optional<Admin> adminOptional = adminRepo.findByEmail(authRequest.email);
         if (adminOptional.isPresent()) {
             Admin admin = adminOptional.get();
-            if (admin.getPassword().equals(authRequest.password)) {
-                return ResponseEntity.ok(new AuthResponse("Login successful", admin.getEmail(), "ADMIN"));
+            if (passwordEncoder.matches(authRequest.password, admin.getPassword())) {
+                String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(
+                        admin.getEmail(), admin.getPassword(), new ArrayList<>()), "ADMIN");
+                return ResponseEntity.ok(new AuthResponse("Login successful", admin.getEmail(), "ADMIN", token));
             } else {
-                return ResponseEntity.status(401).body(new AuthResponse("Invalid credentials", authRequest.email, "ADMIN"));
+                return ResponseEntity.status(401).body(new AuthResponse("Invalid credentials", authRequest.email, "ADMIN", null));
             }
         }
 
-        // Check in User table if not found in Admin
         Optional<User> userOptional = userRepo.findByEmail(authRequest.email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getPassword().equals(authRequest.password)) {
-                return ResponseEntity.ok(new AuthResponse("Login successful", user.getEmail(), "USER"));
+            if (passwordEncoder.matches(authRequest.password, user.getPassword())) {
+                String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(
+                        user.getEmail(), user.getPassword(), new ArrayList<>()), "USER");
+                return ResponseEntity.ok(new AuthResponse("Login successful", user.getEmail(), "USER", token));
             } else {
-                return ResponseEntity.status(401).body(new AuthResponse("Invalid credentials", authRequest.email, "USER"));
+                return ResponseEntity.status(401).body(new AuthResponse("Invalid credentials", authRequest.email, "USER", null));
             }
         }
 
-        // If email not found in either table
-        return ResponseEntity.status(404).body(new AuthResponse("User not found", authRequest.email, "NONE"));
+        return ResponseEntity.status(404).body(new AuthResponse("User not found", authRequest.email, "NONE", null));
     }
 }

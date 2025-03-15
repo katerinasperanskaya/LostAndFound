@@ -1,14 +1,12 @@
 export default {
   template: `
     <div class="container py-5">
-
       <div class="d-flex align-items-center justify-content-between mb-4">
         <h1 class="text-dark fw-normal">Manage Users</h1>
         <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#userModal">
           <i class="bi bi-person-plus me-2"></i> Add User/Admin
         </button>
       </div>
-
       <!-- Tabs for Users and Admins -->
       <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
@@ -18,7 +16,6 @@ export default {
           <a class="nav-link" :class="{ active: activeTab === 'admins' }" href="#" @click.prevent="switchTab('admins')">Admins</a>
         </li>
       </ul>
-
       <!-- Data Table -->
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
         <div class="card-body p-5">
@@ -38,7 +35,6 @@ export default {
           </table>
         </div>
       </div>
-
       <!-- Add/Edit Modal -->
       <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -104,7 +100,6 @@ export default {
           </div>
         </div>
       </div>
-
       <!-- Delete Confirmation Modal -->
       <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -122,7 +117,6 @@ export default {
           </div>
         </div>
       </div>
-
       <!-- Toast Notification -->
       <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
         <div id="alertToast" class="toast align-items-center" role="alert">
@@ -164,10 +158,18 @@ export default {
     },
     initDataTable() {
       const endpoint = this.isUser ? 'http://localhost:9091/api/users' : 'http://localhost:9091/api/admins';
+      const token = localStorage.getItem('authToken'); // Retrieve JWT token
+      if (!token) {
+        console.error("No JWT token found in localStorage");
+        return;
+      }
       this.dataTable = $(`#${this.activeTab}Table`).DataTable({
         ajax: {
           url: endpoint,
-          dataSrc: ''
+          dataSrc: '',
+          headers: {
+            'Authorization': `Bearer ${token}` // Include token in request header
+          }
         },
         columns: [
           { data: 'id' },
@@ -194,23 +196,19 @@ export default {
       const userModal = new bootstrap.Modal(document.getElementById('userModal'));
       const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
       const toast = new bootstrap.Toast(document.getElementById('alertToast'));
-
       // Edit user/admin button click
       $('#usersTable, #adminsTable').on('click', '.edit-user', (e) => {
         const id = $(e.currentTarget).data('id');
         const rowData = this.dataTable.row($(e.currentTarget).closest('tr')).data();
         this.showUserModal(rowData);
       });
-
       // Delete user/admin button click
       $('#usersTable, #adminsTable').on('click', '.delete-user', (e) => {
         this.userToDelete = $(e.currentTarget).data('id');
         deleteModal.show();
       });
-
       // Save user/admin button click
       $('#saveUser').on('click', () => this.saveUser());
-
       // Confirm delete
       $('#confirmDelete').on('click', () => this.deleteUser());
     },
@@ -234,29 +232,32 @@ export default {
         form.reportValidity();
         return;
       }
-
       const userData = {
         name: document.getElementById('name').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         password: document.getElementById('password').value || undefined
       };
-
       const id = document.getElementById('userId').value;
       const endpoint = this.editMode
         ? `${this.isUser ? 'http://localhost:9091/api/users' : 'http://localhost:9091/api/admins'}/${id}`
         : `${this.isUser ? 'http://localhost:9091/api/users' : 'http://localhost:9091/api/admins'}`;
       const method = this.editMode ? 'PUT' : 'POST';
-
+      const token = localStorage.getItem('authToken'); // Retrieve JWT token
+      if (!token) {
+        console.error("No JWT token found in localStorage");
+        return;
+      }
       try {
         const response = await fetch(endpoint, {
           method,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include token in request header
+          },
           body: JSON.stringify(userData)
         });
-
         if (!response.ok) throw new Error('Failed to save');
-
         this.showToast('Success', `${this.isUser ? 'User' : 'Admin'} ${this.editMode ? 'updated' : 'created'} successfully!`, 'success');
         this.dataTable.ajax.reload();
         $('#userModal').modal('hide');
@@ -266,15 +267,20 @@ export default {
     },
     async deleteUser() {
       const endpoint = `${this.isUser ? 'http://localhost:9091/api/users' : 'http://localhost:9091/api/admins'}/${this.userToDelete}`;
-
+      const token = localStorage.getItem('authToken'); // Retrieve JWT token
+      if (!token) {
+        console.error("No JWT token found in localStorage");
+        return;
+      }
       try {
         const response = await fetch(endpoint, {
           method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include token in request header
+          }
         });
-
         if (!response.ok) throw new Error('Failed to delete');
-
         this.showToast('Success', `${this.isUser ? 'User' : 'Admin'} deleted successfully!`, 'success');
         this.dataTable.ajax.reload();
         $('#deleteModal').modal('hide');

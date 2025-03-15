@@ -17,8 +17,37 @@ export default {
   methods: {
     async fetchStatusData() {
       try {
-        const unclaimedRes = await fetch("http://localhost:9091/api/found-items/status/UNCLAIMED");
-        const claimedRes = await fetch("http://localhost:9091/api/found-items/status/CLAIMED");
+        // Retrieve the JWT token from localStorage
+        const token = localStorage.getItem('authToken');
+
+        // Check if the token exists
+        if (!token) {
+          console.error("No JWT token found in localStorage");
+          return;
+        }
+
+        // Fetch unclaimed data with the Authorization header
+        const unclaimedRes = await fetch("http://localhost:9091/api/found-items/status/UNCLAIMED", {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Include the token
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // Fetch claimed data with the Authorization header
+        const claimedRes = await fetch("http://localhost:9091/api/found-items/status/CLAIMED", {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Include the token
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // Handle non-2xx responses
+        if (!unclaimedRes.ok || !claimedRes.ok) {
+          throw new Error(`Failed to fetch status data: ${unclaimedRes.statusText || claimedRes.statusText}`);
+        }
 
         const unclaimedData = await unclaimedRes.json();
         const claimedData = await claimedRes.json();
@@ -32,7 +61,7 @@ export default {
 
         this.renderChart();
       } catch (error) {
-        console.error("Error fetching status data:", error);
+        console.error("Error fetching status data:", error.message);
       }
     },
     renderChart() {
@@ -43,7 +72,7 @@ export default {
         this.chartInstance.destroy();
       }
 
-      // new chart
+      // Create a new chart
       this.chartInstance = new Chart(ctx, {
         type: "bar",
         data: {
@@ -62,7 +91,7 @@ export default {
             y: {
               beginAtZero: true,
               ticks: {
-                stepSize: 1, // only whole numbers
+                stepSize: 1, // Only whole numbers
                 callback: function (value) {
                   return Number.isInteger(value) ? value : null;
                 }

@@ -2,11 +2,8 @@ export default {
   template: `
   <div class="container mt-5">
      <h1>Found Items</h1>
-
      <!-- Add Found Item Button -->
-
-	 <button @click="showAddItemForm = true" class="btn btn-success mb-3">Add Found Item</button>
-
+     <button @click="showAddItemForm = true" class="btn btn-success mb-3">Add Found Item</button>
      <!-- Add Found Item Form -->
      <div v-if="showAddItemForm" class="card p-3 mb-3">
         <h4>Add a New Found Item</h4>
@@ -31,17 +28,10 @@ export default {
             <label class="form-label">Date Found</label>
             <input v-model="newItem.dateFound" type="datetime-local" class="form-control" required>
           </div>
-          <!-- Commenting out the image for now
-		  	<div class="mb-2">
-	            <label class="form-label">Image URL</label>
-	            <input v-model="newItem.imageUrl" type="url" class="form-control">
-         	 </div>
-		  -->
           <button type="submit" class="btn btn-primary">Submit</button>
           <button type="button" @click="showAddItemForm = false" class="btn btn-secondary ms-2">Cancel</button>
         </form>
      </div>
-
      <!-- Category Filter Dropdown -->
      <div class="mb-3">
         <label for="category" class="form-label">Filter by Category</label>
@@ -52,7 +42,6 @@ export default {
             </option>
         </select>
      </div>
-
      <!-- Found Items Table -->
      <div v-if="filteredItems.length">
         <table class="table table-striped table-bordered mt-3">
@@ -64,8 +53,6 @@ export default {
                     <th>Location Found</th>
                     <th>Date Found</th>
                     <th>Status</th>
-					<!-- Commenting out image column header -->
-					<!-- <th>Image</th> -->
                     <th>Claim item</th>
                 </tr>
             </thead>
@@ -81,10 +68,6 @@ export default {
                             {{ item.status }}
                         </span>
                     </td>
-					<!-- Commenting out image column --><!--
-                    <td>
-                        <img :src="item.imageUrl" alt="Found Item Image" class="img-thumbnail" width="80">
-                    </td>-->
                     <td>
                         <button v-if="item.status === 'UNCLAIMED'" @click="handleClaim(item.id, item.userId)" class="btn btn-primary btn-sm">
                             Claim
@@ -95,11 +78,9 @@ export default {
             </tbody>
         </table>
      </div>
-
      <!-- No Items Found Message -->
      <p v-else class="text-muted text-center">No found items available.</p>
   </div>
-  
      <!-- Contact Info Modal -->
      <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -136,57 +117,91 @@ export default {
         category: "",
         locationFound: "",
         dateFound: "",
-        // imageUrl: "",
         status: "UNCLAIMED"
       },
-	  contactInfo: {
-	    name: "",
-	    email: "",
-	    phone: ""
-	  }
+      contactInfo: {
+        name: "",
+        email: "",
+        phone: ""
+      }
     };
   },
   async created() {
     await this.fetchFoundItems();
   },
   methods: {
+    // Helper function to get the JWT token from localStorage
+    getAuthToken() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error("No JWT token found in localStorage");
+        throw new Error("No JWT token available");
+      }
+      return token;
+    },
+
     async fetchFoundItems() {
       try {
-        const response = await fetch("http://localhost:9091/api/found-items");
+        const token = this.getAuthToken();
+        const response = await fetch("http://localhost:9091/api/found-items", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch found items: ${response.statusText}`);
+        }
         this.foundItems = await response.json();
         this.categories = [...new Set(this.foundItems.map(item => item.category))];
         this.filteredItems = this.foundItems;
       } catch (error) {
-        console.error("Error fetching found items:", error);
+        console.error("Error fetching found items:", error.message);
       }
     },
-	async openContactModal(userId) {
-	  try {
-	    const response = await fetch(`http://localhost:9091/api/users/${userId}`);
-	    const user = await response.json();
 
-	    this.contactInfo = {
-	      name: user.name || "Unknown",
-	      email: user.email || "No email provided",
-	      phone: user.phone || "No phone number available"
-	    };
+    async openContactModal(userId) {
+      try {
+        const token = this.getAuthToken();
+        const response = await fetch(`http://localhost:9091/api/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch contact info: ${response.statusText}`);
+        }
+        const user = await response.json();
+        this.contactInfo = {
+          name: user.name || "Unknown",
+          email: user.email || "No email provided",
+          phone: user.phone || "No phone number available"
+        };
+        const modal = new bootstrap.Modal(document.getElementById("contactModal"));
+        modal.show();
+      } catch (error) {
+        console.error("Error fetching contact info:", error.message);
+      }
+    },
 
-	    const modal = new bootstrap.Modal(document.getElementById("contactModal"));
-	    modal.show();
-	  } catch (error) {
-	    console.error("Error fetching contact info:", error);
-	  }
-	},
-	async handleClaim(itemId, userId) {
-	  // Call both functions: update claim status and show modal
-	  await this.claimItem(itemId);
-	  this.openContactModal(userId);
-	},
+    async handleClaim(itemId, userId) {
+      // Call both functions: update claim status and show modal
+      await this.claimItem(itemId);
+      this.openContactModal(userId);
+    },
+
     async addFoundItem() {
       try {
+        const token = this.getAuthToken();
         const response = await fetch("http://localhost:9091/api/found-items", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(this.newItem)
         });
         if (response.ok) {
@@ -198,18 +213,25 @@ export default {
           console.error("Failed to add found item");
         }
       } catch (error) {
-        console.error("Error adding found item:", error);
+        console.error("Error adding found item:", error.message);
       }
     },
+
     filterItems() {
       this.filteredItems = this.selectedCategory
         ? this.foundItems.filter(item => item.category === this.selectedCategory)
         : this.foundItems;
     },
+
     async claimItem(itemId) {
       try {
+        const token = this.getAuthToken();
         const response = await fetch(`http://localhost:9091/api/found-items/${itemId}/status/CLAIMED`, {
-          method: "PATCH"
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         });
         if (response.ok) {
           this.foundItems = this.foundItems.map(item =>
@@ -220,9 +242,10 @@ export default {
           console.error("Failed to update status.");
         }
       } catch (error) {
-        console.error("Error claiming item:", error);
+        console.error("Error claiming item:", error.message);
       }
     },
+
     formatDate(dateString) {
       return new Date(dateString).toLocaleDateString();
     }

@@ -12,20 +12,15 @@
 	<groupId>com.tus</groupId>
 	<artifactId>LostAndFound</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>EduDNSFilter</name>
-	<description>Filtering internet traffic for educational insitutes</description>
+	<name>LostAndFound</name>
+	<description></description>
 
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 
-		<!-- DNSJava for DNS message parsing and resolution -->
-    <dependency>
-        <groupId>dnsjava</groupId>
-        <artifactId>dnsjava</artifactId>
-        <version>3.5.2</version>
-    </dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -155,10 +150,10 @@
 			<artifactId>junit-platform-suite</artifactId>
 			<version>1.8.2</version>
 		</dependency>
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>-->
+		</dependency>
 
 		<!-- JWT Library (jjwt) -->
 		<dependency>

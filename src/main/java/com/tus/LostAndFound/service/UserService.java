@@ -4,7 +4,9 @@ import com.tus.lostAndFound.dto.UserDTO;
 import com.tus.lostAndFound.model.User;
 import com.tus.lostAndFound.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Inject PasswordEncoder
 
     // Retrieve all users (returning DTOs)
     public List<UserDTO> getAllUsers() {
@@ -36,6 +41,7 @@ public class UserService {
         if (userRepo.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("A user with this email already exists.");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password
         return userRepo.save(user);
     }
 
@@ -45,6 +51,7 @@ public class UserService {
             user.setName(updatedUserDTO.getName());
             user.setEmail(updatedUserDTO.getEmail());
             user.setPhone(updatedUserDTO.getPhone());
+            // Do not update the password here
             return convertToDTO(userRepo.save(user));
         }).orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
     }
