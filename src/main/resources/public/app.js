@@ -50,10 +50,7 @@ const componentFiles = [
   "register.js",         	  
   "aside_menu.js",            // Unrestricted
   "admin/admin_dashboard.js", // Restricted - Admin
-  "user/user_dashboard.js",   // Restricted - User
-  "user/lost_items.js",       // Restricted - User
   "user/found_items.js",      // Restricted - User
-  "admin/admin_claims.js",    // Restricted - Admin
   "admin/admin_users.js"      // Restricted - Admin
 ];
 
