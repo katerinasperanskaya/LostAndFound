@@ -12,8 +12,8 @@ public class FoundItem {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private long userId; // Changed from String to long
-
+    private long userId;
+    
     @Column(nullable = false)
     private String title;
 
