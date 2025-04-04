@@ -59,10 +59,10 @@ public class FoundItemController {
     }
 
     // Get found items by location  
-    @GetMapping("/location/{location}")
-    public ResponseEntity<List<FoundItem>> getFoundItemsByLocation(@PathVariable String location) {
-        return ResponseEntity.ok(foundItemService.getFoundItemsByLocation(location));
-    }
+//    @GetMapping("/location/{location}")
+//    public ResponseEntity<List<FoundItem>> getFoundItemsByLocation(@PathVariable String location) {
+//        return ResponseEntity.ok(foundItemService.getFoundItemsByLocation(location));
+//    }
 
     // Update found item status (UNCLAIMED → CLAIMED)
     @PatchMapping("/{id}/status/{newStatus}")
