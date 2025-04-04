@@ -48,9 +48,9 @@ public class FoundItemService {
     }
 
     // Get found items by location
-    public List<FoundItem> getFoundItemsByLocation(String location) {
-        return foundItemRepo.findByLocationFoundIgnoreCase(location);
-    }
+//    public List<FoundItem> getFoundItemsByLocation(String location) {
+//        return foundItemRepo.findByLocationFoundIgnoreCase(location);
+//    }
 
     // Update found item status (UNCLAIMED → CLAIMED)
     public Optional<FoundItem> updateFoundItemStatus(Long id, FoundItemStatus newStatus) {
