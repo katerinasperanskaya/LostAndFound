@@ -50,10 +50,12 @@ pipeline {
             }
         }}
 
-    post {
-        always {
-            echo 'Cleaning up...'
-            sh 'pkill -f $JAR_NAME || true'
+   post {
+        success {
+            echo "✅ Build, test, and SonarQube analysis completed successfully!"
+        }
+        failure {
+            echo "❌ Build or analysis failed! Check logs."
         }
     }
 }
