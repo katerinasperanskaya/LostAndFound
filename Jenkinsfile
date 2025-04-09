@@ -13,41 +13,42 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/katerinasperanskaya/LostAndFound.git', branch: 'develop'
+                git url: 'https://github.com/katerinasperanskaya/LostAndFound.git', branch: 'main'
             }
         }
 
-        stage('Build & Unit Tests') {
+       
+
+         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                bat 'mvn clean install -DskipTests'
             }
         }
 
-        stage('Start Spring Boot App') {
+        stage('Test with JaCoCo') {
             steps {
-                sh '''
-                    nohup java -jar target/$JAR_NAME > app.log 2>&1 &
-                    echo $! > app.pid
-                    sleep 10
-                '''
+                bat 'mvn test'
             }
         }
 
-        stage('Run Karate Tests') {
+        stage('JaCoCo Report') {
             steps {
-                sh 'mvn test -Dtest=*Karate*'
+                bat 'mvn jacoco:report'  // Generates the coverage report
             }
         }
 
-        stage('Stop App') {
+        stage('SonarQube Analysis') {
             steps {
-                sh '''
-                    kill $(cat app.pid)
-                    rm app.pid
-                '''
+                withSonarQubeEnv("${env.SONARQUBE_ENV}") {
+                    bat """
+                    mvn sonar:sonar ^
+                      -Dsonar.projectKey=indv ^
+                      -Dsonar.login=${SONAR_TOKEN} ^
+                      -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+                    """
+                }
             }
-        }
-    }
+        }}
 
     post {
         always {
