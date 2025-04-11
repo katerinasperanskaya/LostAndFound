@@ -2,20 +2,17 @@ pipeline {
     agent any
     
     tools {
-        maven 'Maven 3.9.9'
+        maven 'maven'
     }
 
-    environment {
-        SONARQUBE_URL = 'http://SonarQube:9000'
-        SONARQUBE_TOKEN = 'sqp_9b45604a5b39f962a82571da0e9c28019b14cae1'
-    }
+
 
     stages {
         stage('Checkout Code') {
             steps {
                 git(
-                    branch: 'dev',
-                    url: 'https://github.com/Rane43/BrainBash.git'
+                    branch: 'main',
+                    url: 'https://github.com/katerinasperanskaya/LostAndFound'
                 )
             }
         }
@@ -44,11 +41,11 @@ pipeline {
                     script {
                         // Trigger SonarQube analysis and retrieve task ID
                         def sonarAnalysis = sh(script: """
-                        mvn sonar:sonar \
-                            -Dsonar.projectKey=individual-project \
-                            -Dsonar.projectName='individual-project' \
-                            -Dsonar.host.url=$SONARQUBE_URL \
-                            -Dsonar.token=$SONARQUBE_TOKEN
+                       mvn sonar:sonar \
+  -Dsonar.projectKey=lostandfound \
+  -Dsonar.projectName='lostandfound' \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=sqp_e707f8d0c9615b1b869e8884dc5a385d99fc2c76
                         """, returnStdout: true).trim()
                     }
                 }
