@@ -1,61 +1,58 @@
 pipeline {
     agent any
-
+    
     tools {
-        maven 'maven' // or whatever version you have configured in Jenkins
-        //jdk 'Java 17'       // match your app’s Java version
+        maven 'Maven 3.9.9'
     }
 
     environment {
-        JAR_NAME = 'LostAndFound-0.0.1-SNAPSHOT.jar'
+        SONARQUBE_URL = 'http://SonarQube:9000'
+        SONARQUBE_TOKEN = 'sqp_9b45604a5b39f962a82571da0e9c28019b14cae1'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/katerinasperanskaya/LostAndFound.git', branch: 'main'
+                git(
+                    branch: 'dev',
+                    url: 'https://github.com/Rane43/BrainBash.git'
+                )
             }
         }
 
-       
-
-         stage('Build') {
+        stage('Clean Project') {
             steps {
-                bat 'mvn clean install -DskipTests'
+                sh "mvn clean"
             }
         }
 
-        stage('Test with JaCoCo') {
+        stage('Build') {
             steps {
-                bat 'mvn test'
+                sh "mvn package"
             }
         }
-
-        stage('JaCoCo Report') {
+        
+        stage('Verify') {
             steps {
-                bat 'mvn jacoco:report'  // Generates the coverage report
+                sh "mvn verify jacoco:report"
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${env.SONARQUBE_ENV}") {
-                    bat """
-                    mvn sonar:sonar ^
-                      -Dsonar.projectKey=indv ^
-                      -Dsonar.login=${SONAR_TOKEN} ^
-                      -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-                    """
+                withSonarQubeEnv('SonarQube') {
+                    script {
+                        // Trigger SonarQube analysis and retrieve task ID
+                        def sonarAnalysis = sh(script: """
+                        mvn sonar:sonar \
+                            -Dsonar.projectKey=individual-project \
+                            -Dsonar.projectName='individual-project' \
+                            -Dsonar.host.url=$SONARQUBE_URL \
+                            -Dsonar.token=$SONARQUBE_TOKEN
+                        """, returnStdout: true).trim()
+                    }
                 }
             }
-        }}
-
-   post {
-        success {
-            echo "✅ Build, test, and SonarQube analysis completed successfully!"
-        }
-        failure {
-            echo "❌ Build or analysis failed! Check logs."
         }
     }
 }
