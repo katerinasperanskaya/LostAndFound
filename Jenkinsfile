@@ -60,7 +60,7 @@ pipeline {
                             -Dsonar.projectName="lostandfound" ^
                             -Dsonar.host.url=http://localhost:9000 ^
                             -Dsonar.token=sqp_e707f8d0c9615b1b869e8884dc5a385d99fc2c76 ^
-                            -Dsonar.coverage.jacoco.xmlReportPaths=target\site\jacoco\jacoco.xml
+                            -Dsonar.coverage.jacoco.xmlReportPaths=target\\site\\jacoco\\jacoco.xml
                     '''
                 }
             }
