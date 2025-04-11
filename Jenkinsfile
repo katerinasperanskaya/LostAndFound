@@ -6,20 +6,15 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                git(
-                    branch: 'main',
-                    url: 'https://github.com/katerinasperanskaya/LostAndFound'
-                )
-            }
-        }
+        // stage('Checkout Code') {
+        //     steps {
+        //         git(
+        //             branch: 'main',
+        //             url: 'https://github.com/katerinasperanskaya/LostAndFound'
+        //         )
+        //     }
+        // }
 
-        stage('Print Working Directory') {
-            steps {
-                bat "cd"
-            }
-        }
 
         stage('Clean Project') {
             steps {
@@ -39,17 +34,11 @@ pipeline {
             }
         }
 
-        stage('Check Jacoco Report Exists') {
-            steps {
-                bat "dir target\\site\\jacoco"
-            }
-        }
-
-        stage('Print Working Directory Before SonarQube') {
-            steps {
-                bat "cd"
-            }
-        }
+        // stage('Check Jacoco Report Exists') {
+        //     steps {
+        //         bat "dir target\\site\\jacoco"
+        //     }
+        // }
 
         stage('SonarQube Analysis') {
             steps {
