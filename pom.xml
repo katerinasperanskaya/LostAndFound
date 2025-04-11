@@ -7,7 +7,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.16</version>
-		<relativePath /> <!-- lookup parent from hiiii repository -->
+		<relativePath /> <!-- lookup parent from hiiiiiiiii repository -->
 	</parent>
 	<groupId>com.tus</groupId>
 	<artifactId>LostAndFound</artifactId>
