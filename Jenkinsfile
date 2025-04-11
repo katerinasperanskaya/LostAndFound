@@ -1,3 +1,44 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'maven'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git(
+                    branch: 'main',
+                    url: 'https://github.com/katerinasperanskaya/LostAndFound'
+                )
+            }
+        }
+
+        stage('Print Working Directory') {
+            steps {
+                bat "cd"
+            }
+        }
+
+        stage('Clean Project') {
+            steps {
+                bat "mvn clean"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat "mvn package"
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                bat "mvn verify jacoco:report"
+            }
+        }
+
         stage('Check Jacoco Report Exists') {
             steps {
                 bat "dir target\\site\\jacoco"
@@ -24,3 +65,5 @@
                 }
             }
         }
+    }
+}
